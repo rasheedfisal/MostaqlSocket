@@ -1,5 +1,5 @@
 module.exports = {
-  corsOrigin: "https://mostaql.vercel.app",
-  port: 8900,
-  host: "mostaql.vercel.app",
+  corsOrigin: "http://localhost:3001",
+  port: 3002,
+  host: "localhost",
 };
