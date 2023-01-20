@@ -6,19 +6,22 @@ const logger = require("./utils/logger");
 //   },
 // });
 
-const addUser = (users, userId, socketId) => {
-  !users.some((user) => user.id === userId) && users.push({ userId, socketId });
+let users = [];
+
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
 };
 
-const removeUser = (users, socketId) => {
+const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
 };
 
-const getUser = (users, userId) => {
-  return users.find((user) => user.id === userId);
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
 };
 
-function socket(io, users) {
+function socket(io) {
   logger.info(`Sockets enabled`);
 
   io.on("connection", (socket) => {
@@ -27,18 +30,20 @@ function socket(io, users) {
 
     //take userId and socketId from user
     socket.on("addUser", (userId) => {
-      addUser(users, userId, socket.id);
+      addUser(userId, socket.id);
       io.emit("getUsers", users);
     });
 
     //send and get message
-    socket.on("sendMessage", ({ sender_id, receiver_id, text }) => {
-      const user = getUser(users, receiver_id);
+    socket.on("sendMessage", ({ senderId, receiverId, text, time }) => {
+      const user = getUser(receiverId);
       logger.info(`send User ${user.socketId}`);
       if (user) {
         io.to(user.socketId).emit("getMessage", {
-          sender_id,
+          senderId,
+          receiverId,
           text,
+          time,
         });
       }
     });
@@ -46,7 +51,7 @@ function socket(io, users) {
     //when disconnect
     socket.on("disconnect", () => {
       console.log("a user disconnected!");
-      removeUser(users, socket.id);
+      removeUser(socket.id);
       io.emit("getUsers", users);
     });
   });
