@@ -47,6 +47,19 @@ function socket(io) {
         });
       }
     });
+    //send and get notifications
+    socket.on("sendNotification", ({ receiverId, title, description }) => {
+      console.log(receiverId);
+      const user = getUser(receiverId);
+      if (user) {
+        logger.info(`send Notification ${user.socketId}`);
+        io.to(user.socketId).emit("getNotification", {
+          receiverId,
+          title,
+          description,
+        });
+      }
+    });
 
     //when disconnect
     socket.on("disconnect", () => {
