@@ -27,7 +27,7 @@ function socket(io) {
   io.on("connection", (socket) => {
     logger.info(`User connected ${socket.id}`);
     //when ceonnect
-
+    logger.info(JSON.stringify(users));
     //take userId and socketId from user
     socket.on("addUser", (userId) => {
       addUser(userId, socket.id);
@@ -37,8 +37,8 @@ function socket(io) {
     //send and get message
     socket.on("sendMessage", ({ senderId, receiverId, text, time }) => {
       const user = getUser(receiverId);
-      logger.info(`send User ${user.socketId}`);
-      if (user) {
+      if (user?.socketId) {
+        logger.info(`send User ${user.socketId}`);
         io.to(user.socketId).emit("getMessage", {
           senderId,
           receiverId,
@@ -51,7 +51,7 @@ function socket(io) {
     socket.on("sendNotification", ({ receiverId, title, description }) => {
       console.log(receiverId);
       const user = getUser(receiverId);
-      if (user) {
+      if (user?.socketId) {
         logger.info(`send Notification ${user.socketId}`);
         io.to(user.socketId).emit("getNotification", {
           receiverId,
