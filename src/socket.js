@@ -35,18 +35,22 @@ function socket(io) {
     });
 
     //send and get message
-    socket.on("sendMessage", ({ senderId, receiverId, text, time }) => {
-      const user = getUser(receiverId);
-      if (user?.socketId) {
-        logger.info(`send User ${user.socketId}`);
-        io.to(user.socketId).emit("getMessage", {
-          senderId,
-          receiverId,
-          text,
-          time,
-        });
+    socket.on(
+      "sendMessage",
+      ({ senderId, receiverId, text, message_type, time }) => {
+        const user = getUser(receiverId);
+        if (user?.socketId) {
+          logger.info(`send User ${user.socketId}`);
+          io.to(user.socketId).emit("getMessage", {
+            senderId,
+            receiverId,
+            text,
+            message_type,
+            time,
+          });
+        }
       }
-    });
+    );
     //send and get notifications
     socket.on("sendNotification", ({ receiverId, title, description }) => {
       console.log(receiverId);
