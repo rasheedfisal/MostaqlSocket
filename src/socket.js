@@ -37,7 +37,7 @@ function socket(io) {
     //send and get message
     socket.on(
       "sendMessage",
-      ({ senderId, receiverId, text, message_type, time }) => {
+      ({ senderId, receiverId, text, fileUrl, message_type, time }) => {
         const user = getUser(receiverId);
         if (user?.socketId) {
           logger.info(`send User ${user.socketId}`);
@@ -45,6 +45,7 @@ function socket(io) {
             senderId,
             receiverId,
             text,
+            fileUrl,
             message_type,
             time,
           });
