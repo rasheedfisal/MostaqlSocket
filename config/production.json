@@ -1,5 +1,5 @@
 {
-  "corsOrigin": ["http://localhost:3001", "http://localhost:3000"],
-  "port": "3002",
-  "host": "localhost"
+  "corsOrigin": ["http://localhost:85", "http://localhost:83"],
+  "port": "84",
+  "host": "0.0.0.0"
 }

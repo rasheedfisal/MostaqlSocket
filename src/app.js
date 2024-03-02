@@ -1,3 +1,4 @@
+require("dotenv").config();
 var express = require("express");
 var { createServer } = require("http");
 var { Server } = require("socket.io");
