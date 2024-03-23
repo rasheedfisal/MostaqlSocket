@@ -45,7 +45,7 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   logger.info(`User connected ${socket.id}`);
   //when connect
-  socketHandler(socket);
+  socketHandler(socket, io);
 });
 
 app.get("/", (_, res) =>

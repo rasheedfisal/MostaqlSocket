@@ -21,13 +21,12 @@ const getUser = (userId) => {
   return users.find((user) => user.userId === userId);
 };
 
-function socketHandler(socket) {
+function socketHandler(socket, io) {
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);
   });
-
   //send and get message
   socket.on(
     "sendMessage",
