@@ -21,58 +21,51 @@ const getUser = (userId) => {
   return users.find((user) => user.userId === userId);
 };
 
-function socket(io) {
-  logger.info(`Sockets enabled`);
+function socketHandler(socket) {
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
+  });
 
-  io.on("connection", (socket) => {
-    logger.info(`User connected ${socket.id}`);
-    //when ceonnect
-    logger.info(JSON.stringify(users));
-    //take userId and socketId from user
-    socket.on("addUser", (userId) => {
-      addUser(userId, socket.id);
-      io.emit("getUsers", users);
-    });
-
-    //send and get message
-    socket.on(
-      "sendMessage",
-      ({ senderId, receiverId, text, fileUrl, message_type, time }) => {
-        const user = getUser(receiverId);
-        if (user?.socketId) {
-          logger.info(`send User ${user.socketId}`);
-          io.to(user.socketId).emit("getMessage", {
-            senderId,
-            receiverId,
-            text,
-            fileUrl,
-            message_type,
-            time,
-          });
-        }
-      }
-    );
-    //send and get notifications
-    socket.on("sendNotification", ({ receiverId, title, description }) => {
-      console.log(receiverId);
+  //send and get message
+  socket.on(
+    "sendMessage",
+    ({ senderId, receiverId, text, fileUrl, message_type, time }) => {
       const user = getUser(receiverId);
       if (user?.socketId) {
-        logger.info(`send Notification ${user.socketId}`);
-        io.to(user.socketId).emit("getNotification", {
+        logger.info(`send User ${user.socketId}`);
+        io.to(user.socketId).emit("getMessage", {
+          senderId,
           receiverId,
-          title,
-          description,
+          text,
+          fileUrl,
+          message_type,
+          time,
         });
       }
-    });
+    }
+  );
+  //send and get notifications
+  socket.on("sendNotification", ({ receiverId, title, description }) => {
+    console.log(receiverId);
+    const user = getUser(receiverId);
+    if (user?.socketId) {
+      logger.info(`send Notification ${user.socketId}`);
+      io.to(user.socketId).emit("getNotification", {
+        receiverId,
+        title,
+        description,
+      });
+    }
+  });
 
-    //when disconnect
-    socket.on("disconnect", () => {
-      console.log("a user disconnected!");
-      removeUser(socket.id);
-      io.emit("getUsers", users);
-    });
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
   });
 }
 
-module.exports = socket;
+module.exports = socketHandler;
