@@ -47,7 +47,6 @@ function socketHandler(socket, io) {
   );
   //send and get notifications
   socket.on("sendNotification", ({ receiverId, title, description }) => {
-    console.log(receiverId);
     const user = getUser(receiverId);
     if (user?.socketId) {
       logger.info(`send Notification ${user.socketId}`);
@@ -56,6 +55,14 @@ function socketHandler(socket, io) {
         title,
         description,
       });
+    }
+  });
+
+  //'user is typing...'
+  socket.on("typing", ({ receiverId }) => {
+    const user = getUser(receiverId);
+    if (user?.socketId) {
+      io.to(user.socketId).emit("typing", { receiverId });
     }
   });
 
