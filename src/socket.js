@@ -66,6 +66,11 @@ function socketHandler(socket, io) {
     }
   });
 
+  //'broadcast active users'
+  socket.on("active-users", () => {
+    io.emit("getUsers", users);
+  });
+
   //when disconnect
   socket.on("disconnect", () => {
     console.log("a user disconnected!");
