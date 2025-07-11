@@ -1,7 +1,13 @@
 {
-  "corsOrigin": ["http://localhost:3000", "http://localhost:3002"],
-  "port": "3001",
+  "corsOrigin": [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://5.189.165.140:3000",
+    "http://5.189.165.140:3001"
+  ],
+  "port": "3002",
   "host": "localhost",
   "redis-port": "6379",
-  "redis-host": "127.0.0.1"
+  "redis-host": "5.189.165.140",
+  "redis-password": "643955"
 }

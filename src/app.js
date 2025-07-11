@@ -17,6 +17,7 @@ const corsOrigin = config.get("corsOrigin");
 
 const redisPort = config.get("redis-port");
 const redisHost = config.get("redis-host");
+const redisPassword = config.get("redis-password");
 
 const app = express();
 
@@ -25,12 +26,11 @@ const pubClient = redis.createClient({
     host: redisHost,
     port: redisPort,
   },
+  password: redisPassword,
 });
 
 pubClient.on("connect", () => {
-  logger.info(
-    `[Redis]: Connected to redis server at ${redisHost}:${redisPort}`
-  );
+  logger.info(`[Redis]: Connected to redis server at ${redisHost}:${redisPort}`);
 });
 const httpServer = createServer(app);
 const subClient = pubClient.duplicate();
@@ -48,17 +48,13 @@ io.on("connection", (socket) => {
   socketHandler(socket, io);
 });
 
-app.get("/", (_, res) =>
-  res.send(`Server is up and running version ${version}`)
-);
+app.get("/", (_, res) => res.send(`Server is up and running version ${version}`));
 
 (async () => {
   await Promise.all([pubClient.connect(), subClient.connect()]);
   io.adapter(redisAdapter.createAdapter(pubClient, subClient));
 
   httpServer.listen(port, host, () => {
-    logger.info(
-      `🚀 Server version ${version} is listening on http://${host}:${port} 🚀`
-    );
+    logger.info(`🚀 Server version ${version} is listening on http://${host}:${port} 🚀`);
   });
 })();

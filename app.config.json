@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "architect-socket",
+      "script": "npx",
+      "interpreter": "none",
+      "args": "npm run start"
+    }
+  ]
+}
